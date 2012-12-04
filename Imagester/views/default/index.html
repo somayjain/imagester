@@ -1,0 +1,27 @@
+{{extend 'layout.html'}}
+
+<!--
+{{group_id=db(db.auth_group.role=='manager').select()[0].id}}
+{{=group_id}}
+-->
+{{if auth.has_membership(auth.id_group('manager'),auth.user.id) == True :}}
+<h1> You Have Admin Priviliges </h1>
+<h3>{{=A("Manage", _href= URL("manage"))}}</h3>
+{{pass}}
+<h1> Upload A Photo </h1>
+<h3>{{=A("Upload", _href= URL("up"))}}</h3>
+<h1>My Images</h1>
+<ul>
+{{for image in images:}}
+{{=LI(A(image.title, _href=URL("show", args=image.id)))}}
+{{=A(INPUT(_type='button' , _value='Delete', _action="" ), _href=URL("delete", args=image.id))}}
+{{pass}}
+</ul>
+
+<h1>Other's Images</h1>
+
+<ul>
+{{for image in images2:}}
+{{=LI(A(image.title, _href=URL("show", args=image.id)))}}
+{{pass}}
+</ul>

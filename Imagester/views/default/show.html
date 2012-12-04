@@ -1,0 +1,43 @@
+{{extend 'layout.html'}}
+{{if session.auth.user.first_name + " " + session.auth.user.last_name == image.author:}}
+<form>
+{{=A(INPUT(_type='button' , _value='Delete', _action="" ), _href=URL("delete", args=image.id))}} 
+{{pass}}
+</form>
+
+<h1>{{=image.title}}</h1>
+<center>
+<img width="100%"
+src="{{=URL('download', args=image.file)}}" />
+</center>
+
+{{query = (db.likes.imageid == image.id) & (db.likes.authorid == (session.auth.user.id))}}
+{{ list=db(query).select(db.likes.ALL) }}
+
+
+{{ if len(list) ==0 :}}
+<p>
+{{=A(INPUT(_type='button' , _value='Like', _action="" ), _href=URL("like", args=image.id ))}}
+
+{{pass}}</p>
+{{ if len(list) !=0 :}}
+<p>
+You like this
+{{=A(INPUT(_type='button' , _value='Unlike', _action="" ), _href=URL("unlike", args=image.id ))}}
+{{pass}}</p>
+
+{{query = (db.likes.imageid == image.id)}}
+{{ list=db(query).select(db.likes.ALL) }}
+No of likes = {{=len(list)}}
+
+{{if len(comments):}}
+<h3>Comments</h3><p>
+{{for comment in comments:}}
+<p><i>{{=comment.author}}</i> says {{=comment.body}}</p>
+{{pass}}</p>
+{{else:}}
+<h3>No comments posted yet</h3>
+{{pass}}
+<h3>Post a comment</h3>
+{{=form}}
+
